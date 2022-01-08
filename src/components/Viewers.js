@@ -27,7 +27,7 @@ export default Viewers
 
 const Container = styled.div`
     margin-top: 30px;
-    border: 2px solid red;
+    //border: 2px solid red;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-gap: 25px;
