@@ -1,14 +1,45 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import db from '../firebase'
 
 function Detail() {
+
+    const { id } = useParams();
+    const [detailData, setDetailData] = useState({});
+
+    useEffect(() => {
+        db.collection('movies')
+            .doc(id)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    setDetailData(doc.data());
+                }
+                else {
+                    console.log('no such document in firebase🔥')
+                }
+            })
+            .catch((error) => {
+                console.log("Error getting document: ", error);
+            });
+    }, [id]);
+
+
+
     return (
         <Container>
             <Background>
-                <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/9D8AEB7DE234898392BFD20E7D9B112B841E920AF9A3F54CCFB966722AFF3461/scale?width=1920&aspectRatio=1.78&format=jpeg"/>
+                <img 
+                    alt={detailData.title}
+                    src={detailData.backgroundImg}
+                />
             </Background>
             <ImageTitle>
-                <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/EF737B93E2F2ABE27C74CBBEB322F18A421E7986129E9989587CEF2295B0447F/scale?width=1344&aspectRatio=1.78&format=png"/>
+                <img 
+                    alt={detailData.title}
+                    src={detailData.titleImg}
+                />
             </ImageTitle>
             <Controls>
                 <PlayButton>
@@ -26,11 +57,9 @@ function Detail() {
                     <img src="/images/group-icon.png"/>
                 </GroupWatchButton>
             </Controls>
-            <SubTitle>
-                    2018 ・ 7m ・ Family, Fantasy, Kids, Animation
-            </SubTitle>
+            <SubTitle>{detailData.subTitle}</SubTitle>
             <Description>
-                A Chinese mom who's sad when her grown son leaves home gets another chance at motherhood when one of her dumplings springs to life. But she finds that nothing stays cute and small forever.
+                {detailData.description}
             </Description>
         </Container>
     )
@@ -65,7 +94,6 @@ const ImageTitle = styled.div`
     width: 35vw;
     min-height: 170px;
     min-width: 200px;
-    border: 1px solid red;
 
     
     
